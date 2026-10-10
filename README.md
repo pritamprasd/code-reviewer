@@ -205,27 +205,45 @@ Navigate to the **✍️ Custom Instructions Manager** tab in the UI:
 
 ## ⚙️ Configuring LLM Gateways
 
-### 1. OpenRouter
+### 1. OpenRouter (Cloud Gateway - Recommended for Multi-Model Access)
 1. Select **OpenRouter** in the sidebar preset.
 2. Enter your `OPENROUTER_API_KEY`.
 3. Model: `openrouter/anthropic/claude-3.5-sonnet` (or `openrouter/openai/gpt-4o`, `openrouter/deepseek/deepseek-chat`).
 
-### 2. GitHub Copilot & GitHub Models
-- **Via GitHub Models (Marketplace)**:
-  - Preset: `GitHub Models (Marketplace)`
-  - Base URL: `https://models.inference.ai.azure.com`
-  - Model: `github/gpt-4o`
-  - API Key: Your GitHub Personal Access Token (`ghp_...`).
-- **Via LiteLLM Copilot Proxy**:
-  - Run LiteLLM Proxy locally: `litellm --model github_copilot/gpt-4o --port 4000`
-  - Preset: `GitHub Copilot (via Proxy / LiteLLM)`
-  - Base URL: `http://localhost:4000/v1`
+### 2. GitHub Copilot (via LiteLLM Proxy / Copilot Proxy)
+Bridge your active GitHub Copilot subscription locally using LiteLLM:
+1. Start LiteLLM proxy in a separate terminal:
+   ```bash
+   litellm --model github_copilot/gpt-4o --port 4000
+   ```
+   *(First run will prompt for GitHub device authentication via https://github.com/login/device)*
+2. In the app sidebar, select **GitHub Copilot (via Proxy / LiteLLM)** preset.
+3. Gateway Base URL: `http://localhost:4000/v1`
+4. Model Name: `github_copilot/gpt-4o`
 
-### 3. Local Ollama
-1. Start Ollama locally: `ollama run qwen2.5-coder:14b`
+### 3. Azure AI Foundry (Official Successor to GitHub Models)
+Microsoft officially transitioned GitHub Models to Azure AI Foundry:
+1. Select **Azure AI Foundry (GitHub Models Successor)** preset.
+2. Set Gateway Base URL to your Azure Foundry endpoint:
+   ```
+   https://<your-resource-name>.services.ai.azure.com/models
+   ```
+3. Set Model Name: `azure/gpt-4o`
+4. Enter your Azure AI API key in the **API Key** input.
+
+### 4. Local Ollama (100% Offline & Private)
+For air-gapped or privacy-restricted repositories:
+1. Start Ollama locally:
+   ```bash
+   ollama run qwen2.5-coder:14b
+   ```
 2. Select **Local Ollama** preset.
 3. Base URL: `http://localhost:11434`
-4. Model: `ollama/qwen2.5-coder:14b`
+4. Model: `ollama/qwen2.5-coder:14b` (or `ollama/deepseek-coder-v2`)
+
+> [!NOTE]
+> **Why did GitHub Models return `OK\r\n`?**
+> The GitHub Models Inference API (`models.github.ai` and `models.inference.ai.azure.com`) was officially retired on July 30, 2026. The backend server returns HTTP 200 plaintext `OK\r\n` instead of JSON completion objects. Please use Azure AI Foundry, GitHub Copilot Proxy, OpenRouter, or Local Ollama instead.
 
 ---
 

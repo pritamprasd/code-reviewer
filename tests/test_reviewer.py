@@ -104,5 +104,38 @@ class TestInstructionManager(unittest.TestCase):
         self.assertIn("SPRING-BOOT-REVIEWER", layered)
 
 
+class TestLLMGateway(unittest.TestCase):
+    def test_presets_exist(self):
+        from core.llm_gateway import LLMGateway
+
+        presets = LLMGateway.DEFAULT_PRESETS
+        self.assertIn("OpenRouter", presets)
+        self.assertIn("GitHub Copilot (via Proxy / LiteLLM)", presets)
+        self.assertIn("Azure AI Foundry (GitHub Models Successor)", presets)
+        self.assertIn("Local Ollama", presets)
+
+    def test_empty_ok_error_translation(self):
+        from core.llm_gateway import LLMGateway
+
+        fake_err = Exception(
+            "litellm.InternalServerError: InternalServerError: GithubException - "
+            "Empty or invalid response from LLM endpoint. Received: 'OK\\r\\n'. "
+            "Check the reverse proxy or model server configuration."
+        )
+        msg = LLMGateway.format_error_message(fake_err)
+        self.assertIn("GitHub Models", msg)
+        self.assertIn("retired by GitHub", msg)
+        self.assertIn("Azure AI Foundry", msg)
+
+    def test_endpoint_sanitization(self):
+        from core.llm_gateway import LLMGateway
+
+        gw = LLMGateway(
+            model="github/gpt-4o",
+            api_base="https://models.inference.ai.azure.com",
+        )
+        self.assertEqual(gw.api_base, "https://models.github.ai/inference")
+
+
 if __name__ == "__main__":
     unittest.main()

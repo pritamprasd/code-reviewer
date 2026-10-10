@@ -213,6 +213,12 @@ def init_session_state():
         st.session_state.nav_dir = os.getcwd()
     if "show_in_app_browser" not in st.session_state:
         st.session_state.show_in_app_browser = False
+    if "selected_preset" not in st.session_state:
+        st.session_state.selected_preset = list(LLMGateway.DEFAULT_PRESETS.keys())[0]
+    if "gateway_model" not in st.session_state:
+        st.session_state.gateway_model = LLMGateway.DEFAULT_PRESETS[st.session_state.selected_preset]["model"]
+    if "gateway_api_base" not in st.session_state:
+        st.session_state.gateway_api_base = LLMGateway.DEFAULT_PRESETS[st.session_state.selected_preset]["api_base"]
 
 
 init_session_state()
@@ -339,23 +345,40 @@ git_reader.main_branch = dest_branch
 
 # 2. LLM Gateway Configuration
 st.sidebar.subheader("2. LLM Gateway & Model")
+
+def on_preset_changed():
+    chosen = st.session_state.preset_selector
+    meta = LLMGateway.DEFAULT_PRESETS[chosen]
+    st.session_state.gateway_model = meta["model"]
+    st.session_state.gateway_api_base = meta["api_base"]
+    st.session_state.selected_preset = chosen
+
+preset_keys = list(LLMGateway.DEFAULT_PRESETS.keys())
+current_idx = preset_keys.index(st.session_state.selected_preset) if st.session_state.selected_preset in preset_keys else 0
+
 preset_choice = st.sidebar.selectbox(
     "Gateway Provider / Preset",
-    list(LLMGateway.DEFAULT_PRESETS.keys()),
-    index=0,
+    options=preset_keys,
+    index=current_idx,
+    key="preset_selector",
+    on_change=on_preset_changed,
 )
 preset_info = LLMGateway.DEFAULT_PRESETS[preset_choice]
+st.sidebar.caption(preset_info["description"])
 
-default_model = preset_info["model"]
-default_base = preset_info["api_base"]
+if "Deprecated" in preset_choice or "github.ai" in str(st.session_state.gateway_api_base) or "models.inference.ai.azure.com" in str(st.session_state.gateway_api_base):
+    st.sidebar.warning(
+        "⚠️ **GitHub Models was retired on July 30, 2026** and returns a stub `'OK'`. "
+        "Please select **Azure AI Foundry**, **GitHub Copilot (via Proxy)**, or **OpenRouter**."
+    )
 
-model_name = st.sidebar.text_input("Model Name", value=default_model)
-api_base = st.sidebar.text_input("Gateway Base URL", value=default_base)
+model_name = st.sidebar.text_input("Model Name", key="gateway_model")
+api_base = st.sidebar.text_input("Gateway Base URL", key="gateway_api_base")
 api_key = st.sidebar.text_input(
     "API Key / GitHub Token",
     value=os.getenv("LLM_API_KEY") or os.getenv("OPENROUTER_API_KEY") or os.getenv("GITHUB_TOKEN") or "",
     type="password",
-    help="API key for OpenRouter, or GitHub PAT for GitHub Models/Copilot proxy",
+    help="API key for OpenRouter/Azure, or token for GitHub Copilot proxy",
 )
 
 if st.sidebar.button("Test Gateway Connection"):
@@ -403,7 +426,7 @@ with main_nav_tab1:
 
     with tab_branches:
         st.markdown(
-            f"Generate diff directly from local git repository: `{st.session_state.dest_branch}` $\leftarrow$ `{st.session_state.src_branch}`"
+            f"Generate diff directly from local git repository: `{st.session_state.dest_branch}` ← `{st.session_state.src_branch}`"
         )
         if st.button("⚡ Generate Diff from Selected Branches", type="secondary"):
             if not is_valid_repo:
