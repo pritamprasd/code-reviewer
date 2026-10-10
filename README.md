@@ -6,32 +6,35 @@ A privacy-first, context-aware AI code review assistant with a lightweight **Str
 
 ## 🌟 Key Features
 
-1. **Local Branch Selection & Instant Diff Generation**:
+1. **GUI Folder Selection & Interactive Tree Browser**:
+   - One-click native OS folder selection dialog (GNOME / Ubuntu file chooser via `zenity` or `tkinter`).
+   - Built-in interactive in-app directory tree navigator with automatic Git repository badge detection.
+2. **Local Branch Selection & Instant Diff Generation**:
    - Point to any locally cloned repository.
    - Select **Destination / Base Branch** (e.g., `main`) and **Source / Feature Branch** (e.g., `feat/login`) directly from dynamic dropdowns.
    - Click **⚡ Generate Diff from Selected Branches** to create the diff instantly via `git diff dest...src`, or upload/paste an exported `.diff`/`.patch` file.
-2. **100% Offline & Private Local Context**:
+3. **100% Offline & Private Local Context**:
    - Zero access to cloud GitHub or Azure DevOps PR APIs required.
    - Reads `branch_main` strictly from your local repository clone using non-destructive Git object reading (`git show <main_branch>:<file>`), so you never have to switch branches.
-3. **Context-Aware Code Graph & Graphify Methodology**:
+4. **Context-Aware Code Graph & Graphify Methodology**:
    - Maps class hierarchies, method signatures, imports, and **blast radius** (downstream callers in `main`) using deterministic AST parsing and optional Graphify (`graphify-out/graph.json`) integration.
-4. **Multi-Tiered Custom Instructions**:
+5. **Multi-Tiered Custom Instructions**:
    - **Global Parent Inherited Instructions**: Valid across all projects and agents (mandates `class->line_number->Review comment` format, response tone, and severity standards).
    - **Task / Skill-Specific Instructions**: Tailored rules per technology (e.g. MapStruct in Spring Boot, TanStack Query in React, OWASP checklist in Security).
    - Fully editable and savable directly inside the Streamlit UI!
-5. **Strict Standard Output Format**:
+6. **Strict Standard Output Format**:
    - Enforces the exact requested review comment format:
      ```text
      class->line_number->Review comment
      ```
-6. **Universal Open-Source LLM Gateway**:
+7. **Universal Open-Source LLM Gateway**:
    - Powered by **LiteLLM**, supporting:
      - **OpenRouter** (Claude 3.5 Sonnet, GPT-4o, DeepSeek, Llama 3.3)
      - **GitHub Copilot** (via LiteLLM Copilot Proxy or Copilot tokens)
      - **GitHub Models** (using GitHub PAT at `https://models.inference.ai.azure.com`)
      - **Local Ollama** (e.g. `qwen2.5-coder:14b`, `deepseek-coder-v2`)
      - Any custom OpenAI-compatible proxy.
-7. **Ubuntu Deployment & Multi-OS CI/CD Pipeline**:
+8. **Ubuntu Deployment & Multi-OS CI/CD Pipeline**:
    - Ubuntu systemd service unit and desktop application shortcut included.
    - Automated GitHub Actions release pipeline building multi-OS artifacts (Linux, Windows, macOS) on every push to `main`.
 
