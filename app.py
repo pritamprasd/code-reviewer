@@ -27,24 +27,165 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for clean UI styling
-st.markdown(
+# Custom CSS for compact minimalist sidebar and 90% dashboard layout with zero vertical padding
+st.html(
     """
 <style>
-    .metric-card {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        padding: 12px;
-        border-left: 5px solid #1E88E5;
-        margin-bottom: 10px;
+    /* =====================================================================
+       1. RIGHT SIDE DASHBOARD: 90% AVAILABLE WIDTH & ZERO VERTICAL PADDING
+       ===================================================================== */
+    [data-testid="stMainBlockContainer"],
+    div.block-container,
+    .main .block-container {
+        max-width: 90vw !important;
+        width: 90% !important;
+        padding-top: 0rem !important;
+        padding-bottom: 0.75rem !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
-    .badge-critical { color: #d32f2f; font-weight: bold; }
-    .badge-warning { color: #f57c00; font-weight: bold; }
-    .badge-suggestion { color: #388e3c; font-weight: bold; }
+
+    /* Collapse empty top header bar space */
+    header[data-testid="stHeader"] {
+        height: 0.5rem !important;
+        min-height: 0.5rem !important;
+        background: transparent !important;
+        z-index: 99 !important;
+    }
+
+    section.main {
+        padding-top: 0rem !important;
+    }
+
+    .main h1:first-of-type {
+        margin-top: 0rem !important;
+        padding-top: 0.25rem !important;
+        font-size: 1.7rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.02em !important;
+    }
+
+    /* =====================================================================
+       2. LEFT SIDE SIDEBAR: GENEROUS PADDING, COMPACT & MINIMALIST DESIGN
+       ===================================================================== */
+    section[data-testid="stSidebar"] {
+        background-color: #f8fafc !important;
+        border-right: 1px solid #e2e8f0 !important;
+        min-width: 320px !important;
+    }
+
+    /* Generous internal padding on sidebar */
+    [data-testid="stSidebarContent"],
+    [data-testid="stSidebarUserContent"],
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-left: 1.4rem !important;
+        padding-right: 1.4rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1.75rem !important;
+    }
+
+    /* Compact vertical flow between sidebar elements */
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        gap: 0.5rem !important;
+    }
+
+    /* Minimalist sidebar headers */
+    [data-testid="stSidebar"] h1 {
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        padding-bottom: 0.4rem !important;
+        margin-bottom: 0.5rem !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #64748b !important;
+        margin-top: 0.55rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    /* Sleek compact form labels */
+    [data-testid="stSidebar"] label p {
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    /* Compact input controls */
+    [data-testid="stSidebar"] .stTextInput input,
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {
+        font-size: 0.8rem !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        min-height: 2.1rem !important;
+    }
+
+    /* Minimalist sidebar buttons */
+    [data-testid="stSidebar"] .stButton button {
+        font-size: 0.78rem !important;
+        padding: 0.32rem 0.6rem !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        color: #334155 !important;
+        font-weight: 500 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+
+    [data-testid="stSidebar"] .stButton button:hover {
+        border-color: #2563eb !important;
+        color: #2563eb !important;
+        background-color: #eff6ff !important;
+    }
+
+    /* Compact alerts in sidebar */
+    [data-testid="stSidebar"] [data-testid="stAlert"] {
+        padding: 0.35rem 0.65rem !important;
+        font-size: 0.78rem !important;
+        border-radius: 6px !important;
+    }
+
+    /* =====================================================================
+       3. GENERAL REFINED COMPONENT STYLES
+       ===================================================================== */
+    .metric-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 14px;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #2563eb;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .badge-critical { color: #dc2626; font-weight: bold; }
+    .badge-warning { color: #d97706; font-weight: bold; }
+    .badge-suggestion { color: #16a34a; font-weight: bold; }
     .stCodeBlock { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+    /* Polished tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.35rem !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        padding: 0.4rem 0.85rem !important;
+        border-radius: 6px 6px 0 0 !important;
+    }
 </style>
-""",
-    unsafe_allow_html=True,
+"""
 )
 
 
@@ -83,7 +224,7 @@ st.sidebar.subheader("1. Local Repository & Branches")
 col_pick1, col_pick2 = st.sidebar.columns([1, 1])
 
 with col_pick1:
-    if st.button("📂 Browse...", help="Open native Ubuntu / OS folder selection dialog", use_container_width=True):
+    if st.button("📂 Browse...", help="Open native Ubuntu / OS folder selection dialog"):
         chosen_dir = pick_folder_native(st.session_state.repo_path)
         if chosen_dir:
             st.session_state.repo_path = chosen_dir
@@ -92,7 +233,7 @@ with col_pick1:
 
 with col_pick2:
     tree_label = "❌ Close Tree" if st.session_state.show_in_app_browser else "🗂️ In-App Tree"
-    if st.button(tree_label, help="Toggle in-app directory explorer", use_container_width=True):
+    if st.button(tree_label, help="Toggle in-app directory explorer"):
         st.session_state.show_in_app_browser = not st.session_state.show_in_app_browser
         st.rerun()
 
@@ -106,11 +247,11 @@ if st.session_state.show_in_app_browser:
         with nav_col1:
             parent_dir = os.path.dirname(st.session_state.nav_dir)
             if parent_dir and parent_dir != st.session_state.nav_dir:
-                if st.button("⬆️ Up", use_container_width=True):
+                if st.button("⬆️ Up"):
                     st.session_state.nav_dir = parent_dir
                     st.rerun()
         with nav_col2:
-            if st.button("✅ Select", use_container_width=True, help="Set current path as active repository"):
+            if st.button("✅ Select", help="Set current path as active repository"):
                 st.session_state.repo_path = st.session_state.nav_dir
                 st.session_state.show_in_app_browser = False
                 st.rerun()
@@ -241,12 +382,6 @@ selected_skills = st.sidebar.multiselect(
 
 # ----------------- MAIN CONTENT -----------------
 st.title("🤖 Offline AI Code Reviewer Agent")
-st.markdown(
-    """
-Performs automated, context-aware pull request code reviews by analyzing your local repository
-at the destination branch and evaluating changes from your feature branch, GitHub PR, or Azure DevOps PR export.
-"""
-)
 
 # Main Navigation Tabs: Diff Ingestion & Custom Instructions
 main_nav_tab1, main_nav_tab2 = st.tabs(["🚀 PR Review Engine", "✍️ Custom Instructions Manager"])
@@ -326,7 +461,7 @@ with main_nav_tab1:
     col_btn, col_info = st.columns([1, 3])
 
     with col_btn:
-        start_review = st.button("🚀 Run Code Review", type="primary", use_container_width=True)
+        start_review = st.button("🚀 Run Code Review", type="primary")
 
     with col_info:
         if st.session_state.diff_content:
@@ -492,7 +627,7 @@ if st.session_state.review_results is not None:
                 default=["Critical", "Warning", "Suggestion"],
             )
             filtered_df = df[df["Severity"].isin(sev_filter)]
-            st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+            st.dataframe(filtered_df, width="stretch", hide_index=True)
         else:
             st.info("No issues detected or formatted.")
 
