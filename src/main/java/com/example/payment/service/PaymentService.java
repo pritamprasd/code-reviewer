@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PaymentService {
 
     // Issue: Hardcoded live production secret key
-    private String stripeSecretKey = "dummy_key";
+    private String stripeSecretKey = ""; // Read from env
 
     // Issue: Field injection instead of constructor injection
     @Autowired
