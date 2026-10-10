@@ -27,13 +27,26 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for compact minimalist sidebar and 90% dashboard layout with zero vertical padding
+# Custom CSS for Ubuntu native styles (Aubergine sidebar, Canonical Orange accents, Yaru dark theme)
 st.html(
     """
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Ubuntu+Mono:wght@400;700&display=swap');
+
     /* =====================================================================
-       1. RIGHT SIDE DASHBOARD: 90% AVAILABLE WIDTH & ZERO VERTICAL PADDING
+       1. UBUNTU GLOBAL TYPOGRAPHY & DESKTOP THEMING
        ===================================================================== */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        background-color: #1E1E1E !important;
+        color: #FFFFFF !important;
+    }
+
+    code, pre, .stCodeBlock, .stCodeBlock code {
+        font-family: 'Ubuntu Mono', monospace !important;
+    }
+
+    /* Right side dashboard: 90% available width & zero vertical padding */
     [data-testid="stMainBlockContainer"],
     div.block-container,
     .main .block-container {
@@ -57,6 +70,7 @@ st.html(
 
     section.main {
         padding-top: 0rem !important;
+        background-color: #1E1E1E !important;
     }
 
     .main h1:first-of-type {
@@ -65,14 +79,15 @@ st.html(
         font-size: 1.7rem !important;
         font-weight: 700 !important;
         letter-spacing: -0.02em !important;
+        color: #FFFFFF !important;
     }
 
     /* =====================================================================
-       2. LEFT SIDE SIDEBAR: GENEROUS PADDING, COMPACT & MINIMALIST DARK THEME
+       2. UBUNTU SIDEBAR: AUBERGINE PALETTE & COMPACT MINIMALIST CONTROLS
        ===================================================================== */
     section[data-testid="stSidebar"] {
-        background-color: #0f172a !important;
-        border-right: 1px solid #1e293b !important;
+        background-color: #2C001E !important; /* Ubuntu Dark Aubergine */
+        border-right: 1px solid #5E2750 !important; /* Ubuntu Mid-Aubergine */
         min-width: 320px !important;
     }
 
@@ -86,19 +101,18 @@ st.html(
         padding-bottom: 1.75rem !important;
     }
 
-    /* Compact vertical flow between sidebar elements */
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
         gap: 0.5rem !important;
     }
 
-    /* Minimalist sidebar headers */
+    /* Ubuntu sidebar headers */
     [data-testid="stSidebar"] h1 {
         font-size: 1.05rem !important;
         font-weight: 700 !important;
-        color: #f8fafc !important;
+        color: #FFFFFF !important;
         padding-bottom: 0.4rem !important;
         margin-bottom: 0.5rem !important;
-        border-bottom: 1px solid #1e293b !important;
+        border-bottom: 1px solid #5E2750 !important;
     }
 
     [data-testid="stSidebar"] h2,
@@ -107,87 +121,142 @@ st.html(
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
-        color: #94a3b8 !important;
+        color: #AEA79F !important; /* Ubuntu Warm Gray */
         margin-top: 0.55rem !important;
         margin-bottom: 0.2rem !important;
     }
 
-    /* Sleek compact form labels */
     [data-testid="stSidebar"] label p {
         font-size: 0.78rem !important;
         font-weight: 600 !important;
-        color: #cbd5e1 !important;
+        color: #E6E6E6 !important;
         margin-bottom: 0.15rem !important;
     }
 
-    /* Compact input controls in dark mode */
+    /* Ubuntu input controls */
     [data-testid="stSidebar"] .stTextInput input,
     [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {
         font-size: 0.8rem !important;
-        border-radius: 6px !important;
-        border: 1px solid #334155 !important;
-        background-color: #1e293b !important;
-        color: #f8fafc !important;
+        border-radius: 4px !important;
+        border: 1px solid #5E2750 !important;
+        background-color: #3D0028 !important;
+        color: #FFFFFF !important;
         min-height: 2.1rem !important;
     }
 
-    /* Minimalist sidebar buttons */
+    [data-testid="stSidebar"] .stTextInput input:focus,
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"]:focus {
+        border-color: #E95420 !important; /* Ubuntu Canonical Orange */
+        box-shadow: 0 0 0 1px #E95420 !important;
+    }
+
+    /* Ubuntu sidebar buttons */
     [data-testid="stSidebar"] .stButton button {
         font-size: 0.78rem !important;
         padding: 0.32rem 0.6rem !important;
-        border-radius: 6px !important;
-        border: 1px solid #334155 !important;
-        background-color: #1e293b !important;
-        color: #e2e8f0 !important;
+        border-radius: 4px !important;
+        border: 1px solid #5E2750 !important;
+        background-color: #383838 !important;
+        color: #FFFFFF !important;
         font-weight: 500 !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
         transition: all 0.15s ease-in-out !important;
     }
 
     [data-testid="stSidebar"] .stButton button:hover {
-        border-color: #3b82f6 !important;
-        color: #ffffff !important;
-        background-color: #1d4ed8 !important;
+        border-color: #E95420 !important;
+        color: #FFFFFF !important;
+        background-color: #E95420 !important; /* Ubuntu Orange */
     }
 
-    /* Compact alerts in sidebar */
+    /* Compact alerts */
     [data-testid="stSidebar"] [data-testid="stAlert"] {
         padding: 0.35rem 0.65rem !important;
         font-size: 0.78rem !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
     }
 
     /* =====================================================================
-       3. GENERAL REFINED COMPONENT STYLES (DARK THEME)
+       3. UBUNTU NATIVE COMPONENTS & ACCENTS (YARU THEME)
        ===================================================================== */
-    .metric-card {
-        background-color: #1e293b;
-        border-radius: 8px;
-        padding: 10px 14px;
-        border: 1px solid #334155;
-        border-left: 4px solid #3b82f6;
-        margin-bottom: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    /* Primary Action Buttons (Ubuntu Canonical Orange) */
+    button[data-testid="baseButton-primary"],
+    button[kind="primary"] {
+        background-color: #E95420 !important;
+        border: 1px solid #D4400F !important;
+        color: #FFFFFF !important;
+        border-radius: 4px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 4px rgba(233, 84, 32, 0.3) !important;
+        transition: all 0.15s ease-in-out !important;
     }
-    .badge-critical { color: #f87171; font-weight: bold; }
-    .badge-warning { color: #fbbf24; font-weight: bold; }
-    .badge-suggestion { color: #4ade80; font-weight: bold; }
-    .stCodeBlock { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
 
-    /* Polished tabs in dark mode */
+    button[data-testid="baseButton-primary"]:hover,
+    button[kind="primary"]:hover {
+        background-color: #D4400F !important;
+        border-color: #BD380D !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Secondary Action Buttons */
+    button[data-testid="baseButton-secondary"],
+    button[kind="secondary"] {
+        background-color: #2D2D2D !important;
+        border: 1px solid #444444 !important;
+        color: #FFFFFF !important;
+        border-radius: 4px !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+
+    button[data-testid="baseButton-secondary"]:hover,
+    button[kind="secondary"]:hover {
+        border-color: #E95420 !important;
+        color: #E95420 !important;
+        background-color: #383838 !important;
+    }
+
+    /* Ubuntu Yaru Metric Cards */
+    .metric-card {
+        background-color: #2D2D2D !important;
+        border-radius: 6px !important;
+        padding: 10px 14px !important;
+        border: 1px solid #444444 !important;
+        border-left: 4px solid #E95420 !important; /* Ubuntu Orange */
+        margin-bottom: 8px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Ubuntu Color Palette Badges */
+    .badge-critical { color: #DF382C !important; font-weight: bold; } /* Ubuntu Red */
+    .badge-warning { color: #EFB73E !important; font-weight: bold; }  /* Ubuntu Amber */
+    .badge-suggestion { color: #38B44A !important; font-weight: bold; } /* Ubuntu Green */
+
+    /* Tabs (Ubuntu Orange Active State) */
     .stTabs [data-baseweb="tab-list"] {
         gap: 0.35rem !important;
-        border-bottom: 1px solid #334155 !important;
+        border-bottom: 1px solid #3E3E3E !important;
     }
     .stTabs [data-baseweb="tab"] {
         font-size: 0.85rem !important;
         font-weight: 500 !important;
         padding: 0.4rem 0.85rem !important;
-        border-radius: 6px 6px 0 0 !important;
-        color: #94a3b8 !important;
+        border-radius: 4px 4px 0 0 !important;
+        color: #AEA79F !important; /* Ubuntu Warm Gray */
     }
     .stTabs [aria-selected="true"] {
-        color: #60a5fa !important;
+        color: #E95420 !important; /* Ubuntu Canonical Orange */
+        border-bottom: 2px solid #E95420 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Ubuntu Expanders (Yaru Dark Panel) */
+    [data-testid="stExpander"] {
+        background-color: #252525 !important;
+        border: 1px solid #3E3E3E !important;
+        border-radius: 6px !important;
+    }
+    [data-testid="stExpander"] summary:hover {
+        color: #E95420 !important;
     }
 </style>
 """
@@ -366,19 +435,13 @@ preset_choice = st.sidebar.selectbox(
 preset_info = LLMGateway.DEFAULT_PRESETS[preset_choice]
 st.sidebar.caption(preset_info["description"])
 
-if "Deprecated" in preset_choice or "github.ai" in str(st.session_state.gateway_api_base) or "models.inference.ai.azure.com" in str(st.session_state.gateway_api_base):
-    st.sidebar.warning(
-        "⚠️ **GitHub Models was retired on July 30, 2026** and returns a stub `'OK'`. "
-        "Please select **Azure AI Foundry**, **GitHub Copilot (via Proxy)**, or **OpenRouter**."
-    )
-
 model_name = st.sidebar.text_input("Model Name", key="gateway_model")
 api_base = st.sidebar.text_input("Gateway Base URL", key="gateway_api_base")
 api_key = st.sidebar.text_input(
     "API Key / GitHub Token",
     value=os.getenv("LLM_API_KEY") or os.getenv("OPENROUTER_API_KEY") or os.getenv("GITHUB_TOKEN") or "",
     type="password",
-    help="API key for OpenRouter/Azure, or token for GitHub Copilot proxy",
+    help="GitHub PAT with 'models:read' for GitHub Models, or API key for OpenRouter/Azure/Copilot",
 )
 
 if st.sidebar.button("Test Gateway Connection"):
@@ -444,6 +507,24 @@ with main_nav_tab1:
                     else:
                         st.error(diff_out)
 
+        # Collapsible Diff view directly inside Branch Diff tab
+        if st.session_state.diff_content:
+            diff_lines = len(st.session_state.diff_content.splitlines())
+            diff_bytes = len(st.session_state.diff_content)
+            parsed_branch_files = DiffParser.parse(st.session_state.diff_content)
+            with st.expander(f"📄 Branch Diff Preview ({len(parsed_branch_files)} files, {diff_lines:,} lines) — Collapsible View", expanded=True):
+                col_d1, col_d2 = st.columns([3, 1])
+                with col_d1:
+                    st.caption(
+                        f"**Branches:** `{st.session_state.dest_branch}` ← `{st.session_state.src_branch}` | "
+                        f"**Size:** {diff_bytes:,} bytes"
+                    )
+                with col_d2:
+                    if st.button("🗑️ Clear Diff", key="clear_branch_diff"):
+                        st.session_state.diff_content = ""
+                        st.rerun()
+                st.code(st.session_state.diff_content, language="diff")
+
     with tab_upload:
         uploaded_file = st.file_uploader(
             "Upload PR unified diff or patch file exported from GitHub/Azure DevOps (`.diff`, `.patch`)",
@@ -461,6 +542,15 @@ with main_nav_tab1:
         )
         if pasted_diff:
             st.session_state.diff_content = pasted_diff
+
+    # Collapsible Active Diff View on Dashboard
+    if st.session_state.diff_content:
+        diff_lines = len(st.session_state.diff_content.splitlines())
+        parsed_dash_files = DiffParser.parse(st.session_state.diff_content)
+        file_summary = ", ".join([f"`{f.display_name}`" for f in parsed_dash_files]) if parsed_dash_files else "None"
+        with st.expander(f"🔍 Dashboard Diff Viewer ({len(parsed_dash_files)} files, {diff_lines:,} lines) — Click to Expand/Collapse", expanded=True):
+            st.markdown(f"**Changed Files in Diff:** {file_summary}")
+            st.code(st.session_state.diff_content, language="diff")
 
     # Review Trigger Button
     st.markdown("---")

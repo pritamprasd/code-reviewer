@@ -1,10 +1,21 @@
 [theme]
 base = "dark"
-primaryColor = "#3b82f6"
-backgroundColor = "#0f172a"
-secondaryBackgroundColor = "#1e293b"
-textColor = "#f8fafc"
-borderColor = "#334155"
+primaryColor = "#E95420"
+backgroundColor = "#1E1E1E"
+secondaryBackgroundColor = "#2D2D2D"
+textColor = "#FFFFFF"
+borderColor = "#444444"
+baseRadius = "6px"
+buttonRadius = "4px"
+font = "'Ubuntu':https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+codeFont = "'Ubuntu Mono':https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap"
+
+[theme.sidebar]
+backgroundColor = "#2C001E"
+secondaryBackgroundColor = "#3D0028"
+textColor = "#FFFFFF"
+borderColor = "#5E2750"
+primaryColor = "#E95420"
 
 [server]
 headless = true

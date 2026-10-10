@@ -124,8 +124,8 @@ class TestLLMGateway(unittest.TestCase):
         )
         msg = LLMGateway.format_error_message(fake_err)
         self.assertIn("GitHub Models", msg)
-        self.assertIn("retired by GitHub", msg)
-        self.assertIn("Azure AI Foundry", msg)
+        self.assertIn("https://models.github.ai/inference", msg)
+        self.assertIn("models:read", msg)
 
     def test_endpoint_sanitization(self):
         from core.llm_gateway import LLMGateway

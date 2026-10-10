@@ -39,10 +39,10 @@ class LLMGateway:
             "api_base": "http://localhost:4000/v1",
             "description": "Any self-hosted LiteLLM Proxy, vLLM, or Portkey gateway.",
         },
-        "GitHub Models (Marketplace - Deprecated)": {
+        "GitHub Models (Marketplace)": {
             "model": "github/gpt-4o",
             "api_base": "https://models.github.ai/inference",
-            "description": "⚠️ Deprecated: GitHub Models was retired on July 30, 2026 (returns stub 'OK').",
+            "description": "GitHub Models API (https://models.github.ai/inference) using GitHub PAT (models:read).",
         },
     }
 
@@ -58,13 +58,16 @@ class LLMGateway:
         if api_base and "models.inference.ai.azure.com" in api_base:
             api_base = "https://models.github.ai/inference"
 
+        if not api_base and (model.startswith("github/") or "github" in model.lower()):
+            api_base = "https://models.github.ai/inference"
+
         self.model = model
         self.api_key = api_key or os.getenv("LLM_API_KEY") or os.getenv("OPENROUTER_API_KEY") or os.getenv("GITHUB_TOKEN")
         self.api_base = api_base
         self.temperature = temperature
         self.max_tokens = max_tokens
 
-        # Ensure LiteLLM internal fallback doesn't default to retired models.inference.ai.azure.com
+        # Ensure LiteLLM internal fallback uses https://models.github.ai/inference
         if not os.getenv("GITHUB_API_BASE"):
             os.environ["GITHUB_API_BASE"] = self.api_base or "https://models.github.ai/inference"
 
@@ -79,18 +82,16 @@ class LLMGateway:
         if ("Empty or invalid response from LLM endpoint" in err_str and "OK" in err_str) or \
            ("InternalServerError: GithubException" in err_str and "OK" in err_str):
             return (
-                "GitHub Models (models.github.ai / models.inference.ai.azure.com) was retired by GitHub "
-                "on July 30, 2026 and now returns a stub plaintext 'OK\\r\\n' instead of JSON.\n\n"
-                "💡 Recommended Solutions:\n"
-                "1. GitHub Copilot: Use 'GitHub Copilot (via Proxy / LiteLLM)' with a local LiteLLM/Copilot proxy.\n"
-                "2. Azure AI Foundry: Use 'Azure AI Foundry' (Microsoft's official replacement for GitHub Models).\n"
-                "3. OpenRouter: Use 'OpenRouter' with model 'openrouter/openai/gpt-4o' or 'openrouter/anthropic/claude-3.5-sonnet'.\n"
-                "4. Local Ollama: Run 'ollama run qwen2.5-coder:14b' for 100% offline, free, and private code reviews."
+                "The GitHub Models endpoint (https://models.github.ai/inference) returned a plaintext 'OK\\r\\n' instead of a JSON completion.\n\n"
+                "💡 Possible Causes & Solutions:\n"
+                "1. Token Scope: Ensure your GitHub Personal Access Token (PAT) is active and has the 'models:read' permission.\n"
+                "2. Model Identifier: Ensure the model is available on GitHub Models (e.g. 'github/gpt-4o' or 'openai/gpt-4o').\n"
+                "3. Service State: If GitHub Models returns stub 'OK' on your network, use 'GitHub Copilot (via Proxy / LiteLLM)', 'Azure AI Foundry', or 'OpenRouter'."
             )
         if "models.inference.ai.azure.com" in err_str:
             return (
-                "The endpoint 'models.inference.ai.azure.com' was deprecated and retired by Azure/GitHub. "
-                "Please migrate to Azure AI Foundry or use OpenRouter / GitHub Copilot."
+                "The endpoint 'models.inference.ai.azure.com' was deprecated. "
+                "Please use 'https://models.github.ai/inference' or Azure AI Foundry / GitHub Copilot."
             )
         return err_str
 

@@ -241,9 +241,11 @@ For air-gapped or privacy-restricted repositories:
 3. Base URL: `http://localhost:11434`
 4. Model: `ollama/qwen2.5-coder:14b` (or `ollama/deepseek-coder-v2`)
 
-> [!NOTE]
-> **Why did GitHub Models return `OK\r\n`?**
-> The GitHub Models Inference API (`models.github.ai` and `models.inference.ai.azure.com`) was officially retired on July 30, 2026. The backend server returns HTTP 200 plaintext `OK\r\n` instead of JSON completion objects. Please use Azure AI Foundry, GitHub Copilot Proxy, OpenRouter, or Local Ollama instead.
+### 5. GitHub Models (Marketplace)
+1. Select **GitHub Models (Marketplace)** preset in the sidebar.
+2. Gateway Base URL: `https://models.github.ai/inference`
+3. Model Name: `github/gpt-4o`
+4. Enter your GitHub Personal Access Token (PAT with `models:read` permission) in the **API Key** input.
 
 ---
 
