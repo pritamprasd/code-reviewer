@@ -11,6 +11,7 @@ import streamlit as st
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core.diff_parser import DiffParser
+from core.folder_picker import list_directory_entries, pick_folder_native
 from core.git_reader import GitReader
 from core.instruction_manager import InstructionManager
 from core.llm_gateway import LLMGateway
@@ -60,6 +61,12 @@ def init_session_state():
         st.session_state.dest_branch = "main"
     if "src_branch" not in st.session_state:
         st.session_state.src_branch = ""
+    if "repo_path" not in st.session_state:
+        st.session_state.repo_path = os.getcwd()
+    if "nav_dir" not in st.session_state:
+        st.session_state.nav_dir = os.getcwd()
+    if "show_in_app_browser" not in st.session_state:
+        st.session_state.show_in_app_browser = False
 
 
 init_session_state()
@@ -71,13 +78,75 @@ st.sidebar.title("🔍 Reviewer Agent Setup")
 
 # 1. Local Repository Configuration
 st.sidebar.subheader("1. Local Repository & Branches")
+
+# GUI Folder Picker Controls
+col_pick1, col_pick2 = st.sidebar.columns([1, 1])
+
+with col_pick1:
+    if st.button("📂 Browse...", help="Open native Ubuntu / OS folder selection dialog", use_container_width=True):
+        chosen_dir = pick_folder_native(st.session_state.repo_path)
+        if chosen_dir:
+            st.session_state.repo_path = chosen_dir
+            st.session_state.nav_dir = chosen_dir
+            st.rerun()
+
+with col_pick2:
+    tree_label = "❌ Close Tree" if st.session_state.show_in_app_browser else "🗂️ In-App Tree"
+    if st.button(tree_label, help="Toggle in-app directory explorer", use_container_width=True):
+        st.session_state.show_in_app_browser = not st.session_state.show_in_app_browser
+        st.rerun()
+
+# In-App Directory Navigator
+if st.session_state.show_in_app_browser:
+    with st.sidebar.expander("🗂️ Interactive Directory Browser", expanded=True):
+        st.caption(f"Current Path: `{st.session_state.nav_dir}`")
+        
+        # Navigation action buttons
+        nav_col1, nav_col2 = st.columns([1, 1])
+        with nav_col1:
+            parent_dir = os.path.dirname(st.session_state.nav_dir)
+            if parent_dir and parent_dir != st.session_state.nav_dir:
+                if st.button("⬆️ Up", use_container_width=True):
+                    st.session_state.nav_dir = parent_dir
+                    st.rerun()
+        with nav_col2:
+            if st.button("✅ Select", use_container_width=True, help="Set current path as active repository"):
+                st.session_state.repo_path = st.session_state.nav_dir
+                st.session_state.show_in_app_browser = False
+                st.rerun()
+
+        # List subdirectories
+        subdirs, has_git = list_directory_entries(st.session_state.nav_dir)
+        if has_git:
+            st.success("🏷️ Git Repository Detected in this folder!")
+
+        if subdirs:
+            options = ["(Select folder to open...)"] + [
+                f"{'🏷️ [Git] ' if is_git else '📁 '}{name}" for name, is_git in subdirs
+            ]
+            selected_folder = st.selectbox(
+                "Subdirectories:",
+                options=options,
+                key=f"sub_selector_{st.session_state.nav_dir}",
+            )
+            if selected_folder != "(Select folder to open...)":
+                folder_clean = selected_folder.replace("🏷️ [Git] ", "").replace("📁 ", "")
+                st.session_state.nav_dir = os.path.join(st.session_state.nav_dir, folder_clean)
+                st.rerun()
+        else:
+            st.caption("*(No subdirectories)*")
+
+# Repo path text input (synced with session state)
 repo_path_input = st.sidebar.text_input(
     "Local Repo Path",
-    value=os.getcwd(),
-    help="Absolute path to locally cloned repository. No online PR access is needed.",
+    value=st.session_state.repo_path,
+    help="Absolute path to locally cloned repository. Use 'Browse...' or 'In-App Tree' above to pick a folder.",
 )
+if repo_path_input != st.session_state.repo_path:
+    st.session_state.repo_path = repo_path_input
+    st.session_state.nav_dir = repo_path_input
 
-git_reader = GitReader(repo_path_input)
+git_reader = GitReader(st.session_state.repo_path)
 is_valid_repo, repo_msg = git_reader.validate_repo()
 
 available_branches = []

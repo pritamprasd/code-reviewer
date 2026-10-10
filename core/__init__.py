@@ -9,6 +9,7 @@ from .instruction_manager import InstructionManager
 from .skill_manager import SkillManager, Skill
 from .llm_gateway import LLMGateway
 from .reviewer_agent import ReviewerAgent, ReviewComment
+from .folder_picker import pick_folder_native, list_directory_entries
 
 __all__ = [
     "GitReader",
@@ -25,4 +26,6 @@ __all__ = [
     "LLMGateway",
     "ReviewerAgent",
     "ReviewComment",
+    "pick_folder_native",
+    "list_directory_entries",
 ]
