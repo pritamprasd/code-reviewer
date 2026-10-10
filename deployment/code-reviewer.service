@@ -1,0 +1,15 @@
+[Unit]
+Description=Offline AI Code Reviewer Streamlit Service
+After=network.target
+
+[Service]
+Type=simple
+User=%I
+WorkingDirectory=/opt/code-reviewer
+ExecStart=/opt/code-reviewer/venv/bin/streamlit run /opt/code-reviewer/app.py --server.port=8501 --server.headless=true
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

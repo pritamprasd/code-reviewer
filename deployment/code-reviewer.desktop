@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AI Code Reviewer
+Comment=Context-Aware Offline Pull Request Reviewer
+Exec=bash -c "cd $(dirname %k)/.. && source venv/bin/activate && python3 run_app.py"
+Icon=utilities-system-monitor
+Terminal=false
+Categories=Development;Utility;
+StartupNotify=true

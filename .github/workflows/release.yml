@@ -1,0 +1,125 @@
+name: Build Multi-OS Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: code-reviewer-linux-x86_64.tar.gz
+            archive_cmd: tar -czvf code-reviewer-linux-x86_64.tar.gz -C dist/bundle .
+          - os: windows-latest
+            artifact_name: code-reviewer-windows-x86_64.zip
+            archive_cmd: Compress-Archive -Path dist\bundle\* -DestinationPath code-reviewer-windows-x86_64.zip
+          - os: macos-latest
+            artifact_name: code-reviewer-macos.tar.gz
+            archive_cmd: tar -czvf code-reviewer-macos.tar.gz -C dist/bundle .
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Package Application Bundle
+        shell: bash
+        run: |
+          mkdir -p dist/bundle
+          cp -r core skills instructions test_samples app.py run_app.py requirements.txt README.md dist/bundle/
+          if [ -d "deployment" ]; then
+            cp -r deployment dist/bundle/
+          fi
+
+      - name: Build Standalone Executable with PyInstaller (Linux/Mac)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          pyinstaller --noconfirm --onedir --name "code-reviewer" \
+            --add-data "skills:skills" \
+            --add-data "instructions:instructions" \
+            --add-data "core:core" \
+            --add-data "app.py:." \
+            --copy-metadata streamlit \
+            --copy-metadata litellm \
+            run_app.py || true
+          if [ -d "dist/code-reviewer" ]; then
+            cp -r dist/code-reviewer/* dist/bundle/ || true
+          fi
+
+      - name: Create Archive
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            powershell -Command "${{ matrix.archive_cmd }}"
+          else
+            ${{ matrix.archive_cmd }}
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}
+          retention-days: 7
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release_assets
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v1.0.${{ github.run_number }}"
+          name: "AI Code Reviewer Agent v1.0.${{ github.run_number }}"
+          body: |
+            ## Automated Release v1.0.${{ github.run_number }}
+
+            ### What's Included:
+            - **Branch Selection**: Compare local destination and source branches directly.
+            - **Hierarchical Custom Instructions**: Global parent rules + skill-specific guidelines.
+            - **Offline Code Graph**: Deterministic AST scanning & Graphify blast radius analysis.
+            - **Modular Skills**: Spring Boot, React.js, Clean Code, and Security reviewers.
+            - **Universal LLM Gateway**: LiteLLM supporting OpenRouter, GitHub Copilot, Ollama, and Azure.
+
+            ### Downloads:
+            - Linux (Ubuntu/Debian): `code-reviewer-linux-x86_64.tar.gz`
+            - Windows: `code-reviewer-windows-x86_64.zip`
+            - macOS: `code-reviewer-macos.tar.gz`
+          files: |
+            release_assets/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

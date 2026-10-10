@@ -1,0 +1,67 @@
+diff --git a/src/main/java/com/example/shop/controller/OrderController.java b/src/main/java/com/example/shop/controller/OrderController.java
+new file mode 100644
+index 0000000..8d2fa01
+--- /dev/null
++++ b/src/main/java/com/example/shop/controller/OrderController.java
+@@ -0,0 +1,32 @@
++package com.example.shop.controller;
++
++import com.example.shop.dto.OrderRequest;
++import com.example.shop.entity.Order;
++import com.example.shop.service.OrderService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++
++@RestController
++@RequestMapping("/api/orders")
++public class OrderController {
++
++    @Autowired
++    private OrderService orderService;
++
++    @PostMapping("/create")
++    public ResponseEntity<Order> createOrder(@RequestBody OrderRequest request) {
++        Order order = orderService.processOrder(request);
++        return ResponseEntity.ok(order);
++    }
++
++    @GetMapping("/{id}")
++    public ResponseEntity<Order> getOrder(@PathVariable Long id) {
++        return ResponseEntity.ok(orderService.getOrderById(id));
++    }
++}
+diff --git a/src/main/java/com/example/shop/service/OrderService.java b/src/main/java/com/example/shop/service/OrderService.java
+new file mode 100644
+index 0000000..9f42c12
+--- /dev/null
++++ b/src/main/java/com/example/shop/service/OrderService.java
+@@ -0,0 +1,28 @@
++package com.example.shop.service;
++
++import com.example.shop.dto.OrderRequest;
++import com.example.shop.entity.Order;
++import com.example.shop.repository.OrderRepository;
++import org.springframework.stereotype.Service;
++
++@Service
++public class OrderService {
++
++    private final OrderRepository orderRepository;
++    private String adminApiKey = "sk-live-93821038291038102";
++
++    public OrderService(OrderRepository orderRepository) {
++        this.orderRepository = orderRepository;
++    }
++
++    public Order processOrder(OrderRequest request) {
++        Order order = new Order();
++        order.setCustomerId(request.getCustomerId());
++        order.setAmount(request.getAmount());
++        return orderRepository.save(order);
++    }
++
++    public Order getOrderById(Long id) {
++        return orderRepository.findById(id).orElse(null);
++    }
++}

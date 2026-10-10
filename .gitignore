@@ -1,0 +1,23 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build & packaging
+build/
+dist/
+*.spec
+
+# Streamlit
+.streamlit/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db

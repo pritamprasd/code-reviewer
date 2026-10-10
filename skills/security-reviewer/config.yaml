@@ -1,0 +1,13 @@
+name: "security-reviewer"
+description: "Application security reviewer focusing on OWASP Top 10, injection vulnerabilities, auth flaws, and sensitive data leakage"
+version: "1.0.0"
+file_patterns:
+  - "*.*"
+keywords:
+  - "password"
+  - "token"
+  - "secret"
+  - "auth"
+  - "sql"
+  - "query"
+  - "exec"

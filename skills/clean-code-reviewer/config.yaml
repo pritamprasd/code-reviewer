@@ -1,0 +1,10 @@
+name: "clean-code-reviewer"
+description: "General clean code reviewer focusing on SOLID principles, error handling, readability, and performance"
+version: "1.0.0"
+file_patterns:
+  - "*.*"
+keywords:
+  - "class"
+  - "function"
+  - "def"
+  - "interface"
