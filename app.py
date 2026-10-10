@@ -68,11 +68,11 @@ st.html(
     }
 
     /* =====================================================================
-       2. LEFT SIDE SIDEBAR: GENEROUS PADDING, COMPACT & MINIMALIST DESIGN
+       2. LEFT SIDE SIDEBAR: GENEROUS PADDING, COMPACT & MINIMALIST DARK THEME
        ===================================================================== */
     section[data-testid="stSidebar"] {
-        background-color: #f8fafc !important;
-        border-right: 1px solid #e2e8f0 !important;
+        background-color: #0f172a !important;
+        border-right: 1px solid #1e293b !important;
         min-width: 320px !important;
     }
 
@@ -95,10 +95,10 @@ st.html(
     [data-testid="stSidebar"] h1 {
         font-size: 1.05rem !important;
         font-weight: 700 !important;
-        color: #0f172a !important;
+        color: #f8fafc !important;
         padding-bottom: 0.4rem !important;
         margin-bottom: 0.5rem !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #1e293b !important;
     }
 
     [data-testid="stSidebar"] h2,
@@ -107,7 +107,7 @@ st.html(
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
-        color: #64748b !important;
+        color: #94a3b8 !important;
         margin-top: 0.55rem !important;
         margin-bottom: 0.2rem !important;
     }
@@ -116,17 +116,18 @@ st.html(
     [data-testid="stSidebar"] label p {
         font-size: 0.78rem !important;
         font-weight: 600 !important;
-        color: #334155 !important;
+        color: #cbd5e1 !important;
         margin-bottom: 0.15rem !important;
     }
 
-    /* Compact input controls */
+    /* Compact input controls in dark mode */
     [data-testid="stSidebar"] .stTextInput input,
     [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {
         font-size: 0.8rem !important;
         border-radius: 6px !important;
-        border: 1px solid #cbd5e1 !important;
-        background-color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
         min-height: 2.1rem !important;
     }
 
@@ -135,18 +136,18 @@ st.html(
         font-size: 0.78rem !important;
         padding: 0.32rem 0.6rem !important;
         border-radius: 6px !important;
-        border: 1px solid #cbd5e1 !important;
-        background-color: #ffffff !important;
-        color: #334155 !important;
+        border: 1px solid #334155 !important;
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
         font-weight: 500 !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
         transition: all 0.15s ease-in-out !important;
     }
 
     [data-testid="stSidebar"] .stButton button:hover {
-        border-color: #2563eb !important;
-        color: #2563eb !important;
-        background-color: #eff6ff !important;
+        border-color: #3b82f6 !important;
+        color: #ffffff !important;
+        background-color: #1d4ed8 !important;
     }
 
     /* Compact alerts in sidebar */
@@ -157,32 +158,36 @@ st.html(
     }
 
     /* =====================================================================
-       3. GENERAL REFINED COMPONENT STYLES
+       3. GENERAL REFINED COMPONENT STYLES (DARK THEME)
        ===================================================================== */
     .metric-card {
-        background-color: #ffffff;
+        background-color: #1e293b;
         border-radius: 8px;
         padding: 10px 14px;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #2563eb;
+        border: 1px solid #334155;
+        border-left: 4px solid #3b82f6;
         margin-bottom: 8px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
-    .badge-critical { color: #dc2626; font-weight: bold; }
-    .badge-warning { color: #d97706; font-weight: bold; }
-    .badge-suggestion { color: #16a34a; font-weight: bold; }
+    .badge-critical { color: #f87171; font-weight: bold; }
+    .badge-warning { color: #fbbf24; font-weight: bold; }
+    .badge-suggestion { color: #4ade80; font-weight: bold; }
     .stCodeBlock { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
 
-    /* Polished tabs */
+    /* Polished tabs in dark mode */
     .stTabs [data-baseweb="tab-list"] {
         gap: 0.35rem !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #334155 !important;
     }
     .stTabs [data-baseweb="tab"] {
         font-size: 0.85rem !important;
         font-weight: 500 !important;
         padding: 0.4rem 0.85rem !important;
         border-radius: 6px 6px 0 0 !important;
+        color: #94a3b8 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #60a5fa !important;
     }
 </style>
 """
@@ -388,12 +393,11 @@ main_nav_tab1, main_nav_tab2 = st.tabs(["🚀 PR Review Engine", "✍️ Custom 
 
 with main_nav_tab1:
     # Tabs for Diff Input
-    tab_branches, tab_upload, tab_paste, tab_sample = st.tabs(
+    tab_branches, tab_upload, tab_paste = st.tabs(
         [
             "🔀 Local Branch Diff",
             "📁 Upload Diff File",
             "📝 Paste Diff Text",
-            "🧪 Load Sample PR",
         ]
     )
 
@@ -435,27 +439,6 @@ with main_nav_tab1:
         if pasted_diff:
             st.session_state.diff_content = pasted_diff
 
-    with tab_sample:
-        sample_col1, sample_col2 = st.columns(2)
-        with sample_col1:
-            if st.button("Load Spring Boot Sample PR (Java/JPA)"):
-                sample_path = os.path.join(
-                    os.path.dirname(__file__), "test_samples", "sample_spring_boot.diff"
-                )
-                if os.path.exists(sample_path):
-                    with open(sample_path, "r", encoding="utf-8") as f:
-                        st.session_state.diff_content = f.read()
-                    st.success("Loaded Spring Boot sample diff!")
-        with sample_col2:
-            if st.button("Load React.js Sample PR (TSX/Hooks)"):
-                sample_path = os.path.join(
-                    os.path.dirname(__file__), "test_samples", "sample_react.diff"
-                )
-                if os.path.exists(sample_path):
-                    with open(sample_path, "r", encoding="utf-8") as f:
-                        st.session_state.diff_content = f.read()
-                    st.success("Loaded React sample diff!")
-
     # Review Trigger Button
     st.markdown("---")
     col_btn, col_info = st.columns([1, 3])
@@ -472,7 +455,7 @@ with main_nav_tab1:
     # Execution Logic
     if start_review:
         if not st.session_state.diff_content.strip():
-            st.error("Please provide a diff by selecting branches, uploading a file, or loading a sample.")
+            st.error("Please provide a diff by selecting branches, uploading a file, or pasting diff text.")
         else:
             with st.status("Executing Code Review...", expanded=True) as status:
                 # 1. Parse Diff

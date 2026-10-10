@@ -15,7 +15,8 @@ dist/
 *.spec
 
 # Streamlit
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 *.log
 
 # OS metadata
